@@ -113,14 +113,14 @@ data %>%
 ## Other food except cereal food normally sold
 ```{r echo=FALSE}
 data %>% 
-  select(contains("UOASoldGroup_FCer.")) %>% 
+  select(contains("UOASoldGroup_FOth.")) %>% 
   tbl_summary()
 ```
 
 ## Non-Food item normally sold
 ```{r echo=FALSE}
 data %>% 
-  select(contains("UOASoldGroup_FCer.")) %>% 
+  select(contains("UOASoldGroup_NF.")) %>% 
   tbl_summary()
 ```
 
