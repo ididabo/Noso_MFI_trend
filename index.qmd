@@ -71,10 +71,10 @@ docs <- tm_map(docs, removeWords, stopwords("english"))
 
 # Creating the dictionary
 
-dtm <- TermDocumentMatrix(docs) 
-matrix <- as.matrix(dtm) 
-words <- sort(rowSums(matrix),decreasing=TRUE) 
-df <- data.frame(word = names(words),freq=words)
+# dtm <- TermDocumentMatrix(docs) 
+# matrix <- as.matrix(dtm) 
+# words <- sort(rowSums(matrix),decreasing=TRUE) 
+# df <- data.frame(word = names(words),freq=words)
 
 # set.seed(1234) # for reproducibility 
 # wordcloud(words = df$word, freq = df$freq, min.freq = 1, max.words = 200, random.order=FALSE, 
