@@ -48,13 +48,13 @@ tableau2 <- data %>%
                             "MarketName"), by = SvyMod, percent = "row")%>%
   add_overall(last = TRUE, col_label = "**Ensemble** (effectif total: {N})")
 
-# data2 <- data
-# 
-# text <- data2$UOAPriceIncr_expln
-# 
-# docs <- Corpus(VectorSource(text))
-# 
-# # Cleaning the vector
+data2 <- data
+
+text <- data2$UOAPriceIncr_expln
+
+docs <- Corpus(VectorSource(text))
+
+# Cleaning the vector
 # 
 # gsub("https\\S*", "", text) 
 # gsub("@\\S*", "", text) 
