@@ -48,26 +48,26 @@ tableau2 <- data %>%
                             "MarketName"), by = SvyMod, percent = "row")%>%
   add_overall(last = TRUE, col_label = "**Ensemble** (effectif total: {N})")
 
-data2 <- data
-
-text <- data2$UOAPriceIncr_expln
-
-docs <- Corpus(VectorSource(text))
-
-# Cleaning the vector
-
-gsub("https\\S*", "", text) 
-gsub("@\\S*", "", text) 
-gsub("amp", "", text) 
-gsub("[\r\n]", "", text)
-gsub("[[:punct:]]", "", text)
-
-docs <- docs %>%
-  tm_map(removeNumbers) %>%
-  tm_map(removePunctuation) %>%
-  tm_map(stripWhitespace)
-docs <- tm_map(docs, content_transformer(tolower))
-docs <- tm_map(docs, removeWords, stopwords("english"))
+# data2 <- data
+# 
+# text <- data2$UOAPriceIncr_expln
+# 
+# docs <- Corpus(VectorSource(text))
+# 
+# # Cleaning the vector
+# 
+# gsub("https\\S*", "", text) 
+# gsub("@\\S*", "", text) 
+# gsub("amp", "", text) 
+# gsub("[\r\n]", "", text)
+# gsub("[[:punct:]]", "", text)
+# 
+# docs <- docs %>%
+#   tm_map(removeNumbers) %>%
+#   tm_map(removePunctuation) %>%
+#   tm_map(stripWhitespace)
+# docs <- tm_map(docs, content_transformer(tolower))
+# docs <- tm_map(docs, removeWords, stopwords("english"))
 
 # Creating the dictionary
 
