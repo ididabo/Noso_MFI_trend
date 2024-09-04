@@ -1,0 +1,135 @@
+---
+title: "NOSO MFI data collection Trend"
+author: 
+  Idrissa DABO
+title-block-banner: "#D7DBDD"
+date-modified: "09/04/2024 10:30"
+date-format: "MM/D/YYYY, HH:mm"
+lang: fr
+language: 
+  title-block-author-single: "RAM Officer"
+  title-block-modified: "Last update"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc-location: right
+editor: visual
+---
+
+## Data Collected Overview
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(haven)
+library(gtsummary)
+library(wordcloud)
+library(tm)
+library(DT)
+
+# data <- read_sav("C:\\Users\\USER MSI\\Documents\\WFP\\Cameroon CO\\Market Monitoring\\NOSO Mission\\Tendance/data.sav") %>% labelled::to_factor()
+
+data <- read_sav("data.sav") %>% labelled::to_factor()
+
+data <- data |> rename(
+  Region = TrdNodDensLocNameAdm1,
+  Departement = TrdNodDensLocNameAdm2
+)
+
+total_data <- data %>%
+  group_by(Region, Departement, MarketName, SvyMod) %>%
+  count() |>filter(SvyMod == "Trader") |> filter(n < 12)
+ 
+tableau2 <- data %>%
+   tbl_summary(include = c("Region", "Departement", 
+                            "MarketName"), by = SvyMod, percent = "row")%>%
+  add_overall(last = TRUE, col_label = "**Ensemble** (effectif total: {N})")
+
+data2 <- data
+
+text <- data2$UOAPriceIncr_expln
+
+docs <- Corpus(VectorSource(text))
+
+# Cleaning the vector
+
+gsub("https\\S*", "", text) 
+gsub("@\\S*", "", text) 
+gsub("amp", "", text) 
+gsub("[\r\n]", "", text)
+gsub("[[:punct:]]", "", text)
+
+docs <- docs %>%
+  tm_map(removeNumbers) %>%
+  tm_map(removePunctuation) %>%
+  tm_map(stripWhitespace)
+docs <- tm_map(docs, content_transformer(tolower))
+docs <- tm_map(docs, removeWords, stopwords("english"))
+
+# Creating the dictionary
+
+dtm <- TermDocumentMatrix(docs) 
+matrix <- as.matrix(dtm) 
+words <- sort(rowSums(matrix),decreasing=TRUE) 
+df <- data.frame(word = names(words),freq=words)
+
+```
+
+
+
+There is 229 questionnaires (203 trader and 26 Market)  collected in North West and 174 questionnaires (156 trader and 18 Market) collected in South-West. The trend 
+```{r echo=FALSE}
+tableau2
+```
+
+## Market with less than 12 traders collected
+There is 15 markets where the number of trader questionnaire collected is less than 12
+```{r echo=FALSE}
+datatable(total_data)
+```
+
+## Size of shops in NOSO
+ Among the trader  surveyed  7.2% have Big shop, 26% have Normal Shop, 25% have small shop and 41% have Single staff. the number of check-out points or cashiers operate varies between 1 and 3, 90% of which have only one chect out point
+
+```{r echo=FALSE}
+data %>%
+  tbl_summary(include = c("ShopSize",  "ShopCheckoutNb"), 
+              by = SvyMod)%>%
+  add_overall(last = TRUE, col_label = "**Ensemble** (Total: {N})")
+
+```
+
+
+## Cereals Food item normally sold
+```{r echo=FALSE}
+data %>% 
+  select(contains("UOASoldGroup_FCer.")) %>% 
+  tbl_summary()
+```
+
+## Other food except cereal food normally sold
+```{r echo=FALSE}
+data %>% 
+  select(contains("UOASoldGroup_FCer.")) %>% 
+  tbl_summary()
+```
+
+## Non-Food item normally sold
+```{r echo=FALSE}
+data %>% 
+  select(contains("UOASoldGroup_FCer.")) %>% 
+  tbl_summary()
+```
+
+## number of distinct items on sale in Market
+Out of the 44 markets, 20% have more 1000 items, 30% between 201 to 1000, 34% between 51 to 200 and 16% less than 50 items
+```{r echo=FALSE}
+data %>% 
+   select(MktTrdSkuNb_Cl) %>%  
+   tbl_summary()
+
+```
+
